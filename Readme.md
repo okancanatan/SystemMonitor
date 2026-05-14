@@ -6,6 +6,7 @@ A tiny Rust system monitoring tool that prints component temperatures using the 
 - Linux, macOS: supported
 - Windows: Not compatible 
 
-The program refreshes component temperatures every second and prints them to the 
+The program refreshes component temperatures and prints them to the console
+This hasnt been checked on Mac yet.
 ## To Do:
 Windows Compatibility.
