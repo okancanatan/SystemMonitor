@@ -31,3 +31,25 @@ jobs:
         with:
           name: SystemMonitor-${{ matrix.os }}
           path: target/release/SystemMonitor
+
+  build-debian:
+    runs-on: ubuntu-latest
+    container: debian:stable
+
+    steps:
+      - name: Install dependencies
+        run: apt-get update && apt-get install -y curl build-essential git ca-certificates
+
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        run: curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain stable
+
+      - name: Build release
+        run: ~/.cargo/bin/cargo build --release
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SystemMonitor-debian
+          path: target/release/SystemMonitor
