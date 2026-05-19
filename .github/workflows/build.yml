@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     paths-ignore:
-            - 'Readme.md'
+      - 'Readme.md'
 
 permissions:
   contents: read
@@ -15,13 +15,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           profile: minimal
@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SystemMonitor-${{ matrix.os }}
-          path: target/release/SystemMonitor
+          path: ${{ runner.os == 'Windows' && 'target/release/SystemMonitor.exe' || 'target/release/SystemMonitor' }}
 
   build-debian:
     runs-on: ubuntu-latest

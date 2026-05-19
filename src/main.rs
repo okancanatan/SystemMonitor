@@ -1,21 +1,15 @@
-use sysinfo::{System, Components};
 use std::thread::sleep;
 use std::time::Duration;
 
-fn main() {
-    if std::env::consts::OS == "windows" {
-        println!("Not Compatible... sorry");
-        return;
-    }
+use simonlib::hwmon::HardwareMonitor;
 
-    let mut _sys = System::new_all();
-    let mut components = Components::new_with_refreshed_list();
+fn main() {
+    let monitor = HardwareMonitor::new();
 
     loop {
-        components.refresh();
-        for component in &components {
-            println!("{} = temperature - {:.1} C", component.label(), component.temperature());
+        for sensor in monitor.temperatures() {
+            println!("{}: {:.1}°C", sensor.name, sensor.value);
         }
-        sleep(Duration::from_secs(5));
+        sleep(Duration::from_secs(2));
     }
 }

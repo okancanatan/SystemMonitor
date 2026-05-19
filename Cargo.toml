@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-sysinfo = { version = "0.31"}
+silicon-monitor = "1.3"

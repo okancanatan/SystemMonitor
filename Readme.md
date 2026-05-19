@@ -1,12 +1,8 @@
 # SystemMonitor
 
-A tiny Rust system monitoring tool that prints component temperatures using the `sysinfo` crate.
+A tiny Rust system monitoring tool that prints component temperatures using the `silicon-monitor` crate.
 
 ## Compatibility
-- Linux, macOS: supported
-- Windows: Not compatible 
+Compatible with all just download from the releases. 
 
-The program refreshes component temperatures and prints them to the console
-This hasnt been checked on Mac yet.
-## To Do:
-Windows Compatibility.
+The program refreshes component temperatures and prints them to the console every 2 seconds.
