@@ -1,7 +1,8 @@
 [package]
 name = "SystemMonitor"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
-silicon-monitor = "1.3"
+silicon-monitor = { version = "1.3", default-features = false, features = ["nvidia", "amd", "intel", "apple"] }
+chrono = "0.4"
