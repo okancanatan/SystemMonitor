@@ -3,6 +3,10 @@ name = "SystemMonitor"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-silicon-monitor = { version = "1.3", default-features = false, features = ["nvidia", "amd", "intel", "apple"] }
-chrono = "0.4"
+[[bin]]
+name = "SystemMonitor"
+path = "src/main.rs"
+
+[lib]
+name = "simonlib"
+path = "src/lib.rs"
