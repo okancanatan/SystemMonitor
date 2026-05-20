@@ -17,8 +17,10 @@ pub mod hwmon {
             HardwareMonitor { sensors }
         }
 
-        pub fn temperatures(&self) -> Vec<TemperatureSensor> {
-            self.sensors.clone()
+        /// Returns a reference to the temperature sensors.
+        /// Temperature values of -1.0 indicate unavailable sensor data.
+        pub fn temperatures(&self) -> &[TemperatureSensor] {
+            &self.sensors
         }
 
         fn read_sensors() -> Vec<TemperatureSensor> {
@@ -39,10 +41,11 @@ pub mod hwmon {
             }
 
             // Fallback for non-Linux systems or if hwmon not available
+            // -1.0 indicates unavailable sensor data
             if sensors.is_empty() {
                 sensors.push(TemperatureSensor {
                     name: "CPU".to_string(),
-                    value: 0.0,
+                    value: -1.0,
                 });
             }
 
