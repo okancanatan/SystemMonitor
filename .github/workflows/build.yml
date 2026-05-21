@@ -85,11 +85,11 @@ jobs:
           ls -la release-files/
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.0.8
         with:
           files: release-files/*
-          tag_name: ${{ github.run_number }}
-          name: Build ${{ github.run_number }}
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }} - ${{ github.sha }}
           draft: false
           prerelease: false
         env:
