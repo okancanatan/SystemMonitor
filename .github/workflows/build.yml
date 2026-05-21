@@ -71,19 +71,28 @@ jobs:
         with:
           path: artifacts
 
-      - name: Rename artifacts for release
+      - name: Verify and rename artifacts for release
         run: |
           set -e
           mkdir -p release-files
-          # Ubuntu artifact
+          
+          # Verify and copy Ubuntu artifact
+          [ -f artifacts/SystemMonitor-ubuntu-latest/SystemMonitor ] || { echo "Error: Ubuntu artifact not found"; exit 1; }
           cp artifacts/SystemMonitor-ubuntu-latest/SystemMonitor release-files/SystemMonitor-ubuntu-latest
-          # macOS artifact
+          
+          # Verify and copy macOS artifact
+          [ -f artifacts/SystemMonitor-macos-latest/SystemMonitor ] || { echo "Error: macOS artifact not found"; exit 1; }
           cp artifacts/SystemMonitor-macos-latest/SystemMonitor release-files/SystemMonitor-macos-latest
-          # Windows artifact
+          
+          # Verify and copy Windows artifact
+          [ -f artifacts/SystemMonitor-windows-latest/SystemMonitor.exe ] || { echo "Error: Windows artifact not found"; exit 1; }
           cp artifacts/SystemMonitor-windows-latest/SystemMonitor.exe release-files/SystemMonitor-windows-latest.exe
-          # Debian artifact
+          
+          # Verify and copy Debian artifact
+          [ -f artifacts/SystemMonitor-debian/SystemMonitor ] || { echo "Error: Debian artifact not found"; exit 1; }
           cp artifacts/SystemMonitor-debian/SystemMonitor release-files/SystemMonitor-debian
-          echo "✓ All artifacts copied successfully"
+          
+          echo "✓ All artifacts verified and copied successfully"
           ls -la release-files/
 
       - name: Set short SHA
@@ -95,7 +104,7 @@ jobs:
         with:
           files: release-files/*
           tag_name: build-${{ github.run_id }}
-          name: Build ${{ github.run_number }} (${{ steps.sha.outputs.short_sha }})
+          name: Build ${{ github.run_id }} (${{ steps.sha.outputs.short_sha }})
           draft: false
           prerelease: false
         env:
