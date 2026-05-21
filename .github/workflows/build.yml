@@ -103,9 +103,9 @@ jobs:
         uses: softprops/action-gh-release@v2.0.8
         with:
           files: release-files/*
-          tag_name: build-${{ github.run_id }}
-          name: Build ${{ github.run_id }} (${{ steps.sha.outputs.short_sha }})
+          tag_name: build-${{ steps.sha.outputs.short_sha }}
+          name: Build ${{ github.run_number }} - ${{ steps.sha.outputs.short_sha }}
           draft: false
-          prerelease: false
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
