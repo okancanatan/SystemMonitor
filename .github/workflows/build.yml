@@ -8,7 +8,7 @@ on:
       - 'Readme.md'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -57,3 +57,40 @@ jobs:
         with:
           name: SystemMonitor-debian
           path: target/release/SystemMonitor
+
+  release:
+    needs: [build, build-debian]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Rename artifacts for release
+        run: |
+          mkdir -p release-files
+          # Ubuntu artifact
+          cp artifacts/SystemMonitor-ubuntu-latest/SystemMonitor release-files/SystemMonitor-ubuntu-latest
+          # macOS artifact
+          cp artifacts/SystemMonitor-macos-latest/SystemMonitor release-files/SystemMonitor-macos-latest
+          # Windows artifact
+          cp artifacts/SystemMonitor-windows-latest/SystemMonitor.exe release-files/SystemMonitor-windows-latest.exe
+          # Debian artifact
+          cp artifacts/SystemMonitor-debian/SystemMonitor release-files/SystemMonitor-debian
+          ls -la release-files/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-files/*
+          tag_name: ${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
