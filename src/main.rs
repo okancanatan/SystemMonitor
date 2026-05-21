@@ -8,6 +8,7 @@ fn main() {
 
     loop {
         for sensor in monitor.temperatures() {
+            println!("System Status:");
             println!("{}: {:.1}°C", sensor.name, sensor.value);
         }
         sleep(Duration::from_secs(2));
