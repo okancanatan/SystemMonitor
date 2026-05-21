@@ -103,7 +103,7 @@ jobs:
         uses: softprops/action-gh-release@v2.0.8
         with:
           files: release-files/*
-          tag_name: build-${{ steps.sha.outputs.short_sha }}
+          tag_name: build-${{ steps.sha.outputs.short_sha }}-${{ github.run_number }}
           name: Build ${{ github.run_number }} - ${{ steps.sha.outputs.short_sha }}
           draft: false
           prerelease: true
