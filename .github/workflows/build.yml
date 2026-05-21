@@ -73,6 +73,7 @@ jobs:
 
       - name: Rename artifacts for release
         run: |
+          set -e
           mkdir -p release-files
           # Ubuntu artifact
           cp artifacts/SystemMonitor-ubuntu-latest/SystemMonitor release-files/SystemMonitor-ubuntu-latest
@@ -82,13 +83,14 @@ jobs:
           cp artifacts/SystemMonitor-windows-latest/SystemMonitor.exe release-files/SystemMonitor-windows-latest.exe
           # Debian artifact
           cp artifacts/SystemMonitor-debian/SystemMonitor release-files/SystemMonitor-debian
+          echo "✓ All artifacts copied successfully"
           ls -la release-files/
 
       - name: Create Release
         uses: softprops/action-gh-release@v2.0.8
         with:
           files: release-files/*
-          tag_name: build-${{ github.run_number }}
+          tag_name: build-${{ github.run_id }}
           name: Build ${{ github.run_number }} - ${{ github.sha }}
           draft: false
           prerelease: false
