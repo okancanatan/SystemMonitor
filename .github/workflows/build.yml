@@ -97,7 +97,7 @@ jobs:
 
       - name: Set short SHA
         id: sha
-        run: echo "short_sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+        run: echo "short_sha=$(echo "$GITHUB_SHA" | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2.0.8
