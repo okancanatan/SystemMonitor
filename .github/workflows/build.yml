@@ -86,12 +86,16 @@ jobs:
           echo "✓ All artifacts copied successfully"
           ls -la release-files/
 
+      - name: Set short SHA
+        id: sha
+        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v2.0.8
         with:
           files: release-files/*
           tag_name: build-${{ github.run_id }}
-          name: Build ${{ github.run_number }} - ${{ github.sha }}
+          name: Build ${{ github.run_number }} (${{ steps.sha.outputs.short_sha }})
           draft: false
           prerelease: false
         env:
