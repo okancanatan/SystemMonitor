@@ -8,7 +8,7 @@ on:
       - 'Readme.md'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -57,3 +57,55 @@ jobs:
         with:
           name: SystemMonitor-debian
           path: target/release/SystemMonitor
+
+  release:
+    needs: [build, build-debian]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4.1.3
+        with:
+          path: artifacts
+
+      - name: Verify and rename artifacts for release
+        run: |
+          set -e
+          mkdir -p release-files
+          
+          # Verify and copy Ubuntu artifact
+          [ -f artifacts/SystemMonitor-ubuntu-latest/SystemMonitor ] || { echo "Error: Ubuntu artifact not found"; exit 1; }
+          cp artifacts/SystemMonitor-ubuntu-latest/SystemMonitor release-files/SystemMonitor-ubuntu-latest
+          
+          # Verify and copy macOS artifact
+          [ -f artifacts/SystemMonitor-macos-latest/SystemMonitor ] || { echo "Error: macOS artifact not found"; exit 1; }
+          cp artifacts/SystemMonitor-macos-latest/SystemMonitor release-files/SystemMonitor-macos-latest
+          
+          # Verify and copy Windows artifact
+          [ -f artifacts/SystemMonitor-windows-latest/SystemMonitor.exe ] || { echo "Error: Windows artifact not found"; exit 1; }
+          cp artifacts/SystemMonitor-windows-latest/SystemMonitor.exe release-files/SystemMonitor-windows-latest.exe
+          
+          # Verify and copy Debian artifact
+          [ -f artifacts/SystemMonitor-debian/SystemMonitor ] || { echo "Error: Debian artifact not found"; exit 1; }
+          cp artifacts/SystemMonitor-debian/SystemMonitor release-files/SystemMonitor-debian
+          
+          echo "✓ All artifacts verified and copied successfully"
+          ls -la release-files/
+
+      - name: Set short SHA
+        id: sha
+        run: echo "short_sha=$(echo "$GITHUB_SHA" | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          files: release-files/*
+          tag_name: build-${{ steps.sha.outputs.short_sha }}
+          name: Build ${{ github.run_number }} - ${{ steps.sha.outputs.short_sha }}
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
